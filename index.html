@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LogixMaster Pro – Connect Backend</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap narrow">
+    <h1>LogixMaster Pro — Connect Backend</h1>
+
+    <label>Backend URL (Render, no trailing slash)</label>
+    <div class="row">
+      <input id="backend" placeholder="https://your-service.onrender.com" />
+      <button id="btnCheck">Check</button>
+      <span id="status" class="pill">...</span>
+    </div>
+    <p class="muted">We'll call <code>/api/health</code> on your backend.</p>
+
+    <hr />
+
+    <h2>Sign in (optional)</h2>
+    <div class="row">
+      <input id="email" placeholder="email@example.com" />
+      <input id="password" type="password" placeholder="password" />
+    </div>
+    <div class="row">
+      <button id="btnRegister">Register</button>
+      <button id="btnLogin">Login</button>
+    </div>
+    <p class="muted" id="authMsg"></p>
+
+    <hr />
+    <button class="primary" id="openApp">Open App</button>
+  </div>
+
+  <script>
+    const $ = (q)=>document.querySelector(q);
+    const backendInput = $("#backend");
+    const status = $("#status");
+    const msg = $("#authMsg");
+
+    backendInput.value = localStorage.getItem("backend") || "";
+
+    async function check() {
+      const base = backendInput.value.trim().replace(/\/+$/,'');
+      if (!base) return;
+      try {
+        const r = await fetch(base + "/api/health");
+        if (!r.ok) throw 0;
+        const j = await r.json();
+        if (!j.ok) throw 0;
+        localStorage.setItem("backend", base);
+        status.textContent = "OK";
+        status.className = "pill ok";
+      } catch {
+        status.textContent = "ERR";
+        status.className = "pill err";
+      }
+    }
+
+    async function auth(kind) {
+      const base = localStorage.getItem("backend");
+      if (!base) return msg.textContent = "Set backend and Check first.";
+      try {
+        const r = await fetch(base + "/api/auth/" + kind, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: $("#email").value.trim(), password: $("#password").value })
+        });
+        const j = await r.json();
+        if (j.token) {
+          localStorage.setItem("token", j.token);
+          msg.textContent = kind + " ok.";
+        } else {
+          msg.textContent = j.error || (kind + " failed");
+        }
+      } catch (e) {
+        msg.textContent = "Network error";
+      }
+    }
+
+    $("#btnCheck").onclick = check;
+    $("#btnRegister").onclick = ()=>auth("register");
+    $("#btnLogin").onclick = ()=>auth("login");
+    $("#openApp").onclick = ()=>location.href = "app.html";
+  </script>
+</body>
+</html>
