@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LogixMaster Pro — 3D Load Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/three@0.157.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.157.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <h1>LogixMaster Pro — 3D Load Planner</h1>
+
+    <section class="card">
+      <h3>Backend</h3>
+      <div class="row">
+        <input id="backend" />
+        <button id="btnCheck">Check</button>
+        <span id="status" class="pill">...</span>
+      </div>
+      <p class="muted" id="healthNote"></p>
+    </section>
+
+    <div class="grid-2">
+      <section class="card">
+        <h3>Containers</h3>
+        <div class="row">
+          <input id="cid" placeholder="e.g., 20 HC" />
+          <input id="cl" placeholder="L (mm)" />
+          <input id="cw" placeholder="W (mm)" />
+          <input id="ch" placeholder="H (mm)" />
+        </div>
+        <div class="row">
+          <input id="cpayload" placeholder="Max payload (kg)" />
+          <button id="btnAddC">Add/Upsert</button>
+          <button id="btnRefreshC">Refresh</button>
+        </div>
+        <table id="ctbl"></table>
+      </section>
+
+      <section class="card">
+        <h3>Items / SKUs</h3>
+        <div class="row">
+          <input id="iid" placeholder="ID (e.g., A1)" />
+          <input id="il" placeholder="L" />
+          <input id="iw" placeholder="W" />
+          <input id="ih" placeholder="H" />
+        </div>
+        <div class="row">
+          <input id="iwt" placeholder="Wt (kg)" />
+          <input id="iqty" placeholder="Qty" />
+          <select id="irot">
+            <option value="all">rotation: all</option>
+            <option value="none">rotation: none</option>
+          </select>
+          <input id="ifam" placeholder="Family (A/B/...)" />
+          <button id="btnAddI">Add (to DB)</button>
+          <button id="btnRefreshI">Refresh</button>
+        </div>
+        <table id="itbl"></table>
+      </section>
+    </div>
+
+    <div class="grid-2">
+      <section class="card">
+        <h3>Rules & Run</h3>
+        <div class="row">
+          <label>Gap (mm)</label><input id="gap" value="6" />
+        </div>
+        <div class="row">
+          <button id="btnRun">Run Optimization</button>
+          <button id="btnPDF">Download Report (PDF)</button>
+        </div>
+        <p id="summary" class="muted"></p>
+      </section>
+
+      <section class="card">
+        <h3>3D View</h3>
+        <div id="view" class="view"></div>
+      </section>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
